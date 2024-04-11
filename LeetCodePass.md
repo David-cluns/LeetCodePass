@@ -97,3 +97,122 @@ print(result)
 - [Python中for循环语句](https://www.runoob.com/python/python-for-loop.html)
 - [Python中split()方法](https://www.runoob.com/python/att-string-split.html)
 - [Python中strip()方法](https://www.runoob.com/python/att-string-strip.html)
+
+
+
+## 2 移动零
+
+### 2.1 题目描述
+
+> 给定一个数组 `nums`，编写一个函数将所有 `0` 移动到数组的末尾，同时保持非零元素的相对顺序。
+>
+> **请注意** ，必须在不复制数组的情况下原地对数组进行操作。
+>
+> **示例 1:**
+>
+> ```
+> 输入: nums = [0,1,0,3,12]
+> 输出: [1,3,12,0,0]
+> ```
+>
+> **示例 2:**
+>
+> ```
+> 输入: nums = [0]
+> 输出: [0]
+> ```
+
+
+
+### 2.2 题目解答
+
+#### 2.2.1 引入新数组
+
+该方法的基本思路为：遍历输入的数组，记住非零元素的下标，将非零元素按顺序放置在新数组中，最后将剩下的零元素加入新数组的末尾。
+
+```python
+class Solution(Object):
+  def moveZeroes(self,nums):
+    #定义一个空的新数组
+    result = []
+    zero_count = 0
+    #遍历输入的数组，找出非零元素，按顺序存入新数组
+    for i in range(len(nums)):
+      if nums[i] !=0:
+        result.append(nums[i])
+      else:
+        zero_count += 1
+    
+    result.expend([0]*zero_count)
+    return result
+  
+test = Solution()
+nums = input("请输入数组：")
+test_nums = [int(nums.strip()) for num in nums.slip(',')]
+results = test.moveZeroes(test_nums)
+print(result)
+```
+
+
+
+#### 2.2.2 双指针——两次遍历
+
+该方法的详细思路参考LeetCode题解：[动画演示283.移动零](https://leetcode.cn/problems/move-zeroes/solutions/90229/dong-hua-yan-shi-283yi-dong-ling-by-wang_ni_ma/?envType=study-plan-v2&envId=top-100-liked)
+
+> 核心观点是：该方式创建了两个指针 `i` 和 `j`,第一次遍历的时候，由指针`j`记录输入数组中的非零元素。即遍历的时候每遇到一个非零元素就将其往数组左边挪，第一次遍历结束的时候，指针`j`元素刚好指向的是最后一个非零元素的下一个元素。
+>
+> 这样在第二次遍历的时候，只需要将从`j`开始到数组结束后的元素均置为0即可。
+
+```python
+class Solution(Object):
+  def moveZeroes(self,nums):
+    j = 0
+    for i in range(len(nums)):
+      if nums[i]:
+        nums[j] = nums[i]
+        j += 1
+    for i in range(j,len(nums)):
+      nums[i] = 0
+      
+    return nums
+
+test = Solution()
+nums = input("请输入数组：")
+test_nums = eval(nums)
+results = test.moveZeroes(test_nums)
+print(resultes)
+```
+
+
+
+#### 2.2.3双指针——一次遍历
+
+该方法的详细思路参考LeetCode题解：[动画演示283.移动零](https://leetcode.cn/problems/move-zeroes/solutions/90229/dong-hua-yan-shi-283yi-dong-ling-by-wang_ni_ma/?envType=study-plan-v2&envId=top-100-liked)
+
+> 核心观点是：参考快速排序的思想，以`0`作为中间点，不等于`0`的元素均放置在`0`的左边，等于`0`的元素均放置在其右边。具体的实现思路就是利用指针 `i` 和 指针`j`，遍历输入数组，只要`nums[i]`!=0，就将其与`nums[j]`交换位置。
+
+```python
+class Solution(object):
+  def moveZeroes(self,nums):
+    j = 0
+    for i in range(len(nums)):
+      if nums[i]:
+        temp = nums[i]
+        nums[i] = nums[j]
+        nums[j] = temp
+        j += 1
+    return nums
+  
+test = Solution()
+nums = input("请输入数组：")
+test_nums = eval(nums)
+result = test.moveZeroes3(test_nums)
+print(result)
+```
+
+
+
+### 2.3 基础知识汇总
+
+- [python extend()与append()的区别](https://blog.csdn.net/weixin_38145317/article/details/89485983)
+- [Python eval() 函数](https://www.runoob.com/python/python-func-eval.html)
