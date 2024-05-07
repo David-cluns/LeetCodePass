@@ -85,3 +85,18 @@ class Solution(object):
 # test_nums = eval(nums)
 # result = test.moveZeroes3(test_nums)
 # print(result)
+
+    #相交链表
+    def getIntersectionNode(self,headA,headB):
+        s = set()
+        p,q = headA,headB
+
+        while p:
+            s.add(p)
+            p = p.next
+
+        while q:
+            if q in s:
+                return q
+            q = q.next
+        return None

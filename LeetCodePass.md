@@ -216,3 +216,50 @@ print(result)
 
 - [python extend()与append()的区别](https://blog.csdn.net/weixin_38145317/article/details/89485983)
 - [Python eval() 函数](https://www.runoob.com/python/python-func-eval.html)
+
+
+
+## 3 相交链表
+
+### 3.1 题目描述
+
+![getIntersectionNode](./img/getIntersectionNode.jpg)
+
+### 3.2 题目解答
+
+本题解题思路参考LeetCode题解：[【相交链表】五种解法～](https://leetcode.cn/problems/intersection-of-two-linked-lists/solutions/887414/xiang-jiao-lian-biao-wu-chong-jie-fa-by-j73p5/?envType=study-plan-v2&envId=top-100-liked)
+
+想要解答该题，首先需要了解相交链表的概念。这里给出查阅的两个解释：
+
+**解释一**：[图解LeetCode_160.相交链表](https://cloud.tencent.com/developer/article/2286581)
+
+![intersection](./img/intersection.jpg)
+
+**解释二：**来自chatGPT4.0
+
+> 相交链表是指两个单链表在某个节点处“相交”，并且从该节点**之后的部分完全共享**。也就是说，它们从这个相交点开始拥有相同的节点。
+>
+> #### 如何判断两个链表是否相交？
+>
+> 1. **计算长度**：我们可以先分别遍历两个链表，计算它们的长度。
+> 2. **对齐指针**：因为两个链表相交后的部分是相同的，所以我们可以将较长链表的指针向前移动，使两个链表的指针位于相同的剩余长度上。
+> 3. **同步遍历**：然后我们同时遍历两个链表，逐个比较它们的节点。如果两个指针指向同一个节点，则表示找到相交节点。如果遍历结束都没有发现相交点，则表示它们没有相交。
+
+了解了相交链表的概念后，再来观察此题，题目已经说明了给出的为两个单链表，所以要么这两个链表相交（及相交节点后的部分完全相同），要么为平行链表，不可能为解释一中的情况2。所以，只需要确认两个单链表是否有相同的节点值即可。
+
+```python
+class Solution(object):
+  def getIntersectionNode(self,headA,headB):
+    s = set()
+    p,q = headA,headB
+    #将链表A存入
+    while p:
+      s.add(p)
+      p = p.next
+      
+    while q:
+      if q in s:
+        return q
+      q = q.next
+    return None
+```
