@@ -100,3 +100,27 @@ class Solution(object):
                 return q
             q = q.next
         return None
+
+    # 反转链表解法1:双指针
+    def reverseList(self, head):
+        cur = head
+        pre = None
+        while cur:
+            tmp = cur.next
+            cur.next = pre
+            pre = cur
+            cur = tmp
+        return pre
+    
+    # 反转链表解法2:递归
+    def reverseList(self,head):
+        def reverse(cur,pre):
+            if cur == None:
+                return pre
+            tmp = cur.next
+            cur.next = pre
+
+            return reverse(tmp, cur)
+        
+        return reverse(head, None)
+            

@@ -263,3 +263,65 @@ class Solution(object):
       q = q.next
     return None
 ```
+
+
+
+## 4. 反转链表
+
+### 4.1 题目描述
+
+![reverselist](./img/reverselist.png)
+
+### 4.2 题目解答
+
+本题的解题思路参考[《代码随想录》：帮你拿下反转链表](https://www.bilibili.com/video/BV1nB4y1i7eL/?vd_source=63ae45ff293024cc1925b41a2202a3a6)
+
+该视频提供了两种解题思路，个人认为双指针的逻辑相较于递归解法更加清晰，也更易懂。
+
+#### 4.2.1 双指针
+
+所谓双指针，顾名思义就是引入了两个指针：cur指针初始化为head指针，pre指针为空指针。
+
+为了便于理解，我们以示例1的图为参考，此时cur指针相当于1，正向情况下它指向它的后一个节点2。而为了使链表反转，需要让1指向他的前一个节点，即定义的pre指针，翻译成代码，也就是cur.next = pre。但是需要注意的是，在改变链表方向前，不能丢失后面的节点，所以应该先让一个临时指针存下后面的节点，再进行反转，即tmp = cur.next。
+
+这样就完成了一个节点的反转，接下来只需要把pre指针和cur指针向后移动，重复上述步骤即可。不过，这里还需要注意，需要先移动pre指针，再移动cur指针。否则，pre指针无法找到cur指针的原始位置。当pre指针移动到尾节点时，链表才完成了整体的反转。此时，cur指针脱离了链表，成为了空指针。
+
+```python
+def reverseList(self, head):
+  #初始化指针
+  cur = head
+  pre = None
+  
+  #当cur指针非空时，一直进行反转操作
+  while cur:
+    tmp = cur.next #先用tmp指针保存后面的节点
+    cur.next = pre #再反转链表方向
+    # 反转完成后，先移动pre指针,再移动cur指针
+    pre = cur
+    cur = tmp
+  
+  return pre
+```
+
+
+
+#### 4.2.2 递归
+
+实际上，递归的方式完全是按照双指针的逻辑进行改写的，只不过把循环变成了迭代
+
+```python
+def reverseList(self, head):
+  #把双指针的思路转换为一个递归函数
+  def reverse(cur, pre)：
+  	if cur == None:
+      return pre
+    tmp = cur.next
+    cur.next = pre
+    
+    #把移动的步骤转换为递归
+    return reverse(tmp,cur)
+  
+  #主体函数只需要调用递归函数即可
+  return reverse(head, None)
+```
+
