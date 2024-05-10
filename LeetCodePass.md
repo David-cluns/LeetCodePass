@@ -325,3 +325,61 @@ def reverseList(self, head):
   return reverse(head, None)
 ```
 
+
+
+## 5. 回文链表
+
+### 5.1 题目描述
+
+![isPalindrome](./img/isPalindrome.png)
+
+
+
+### 5.2 题目解答
+
+本题的解题思路参考Leetcode题解[快慢指针+链表逆序](https://leetcode.cn/problems/palindrome-linked-list/solutions/457256/kuai-man-zhi-zhen-lian-biao-ni-xu-by-airesearcherj/?envType=study-plan-v2&envId=top-100-liked)
+
+实际上拿到这道题，首先要理解什么是回文链表。所谓“回文”说的通俗点就是以中间点为轴，左右两边对称（或者说呈镜像）。那转换为计算机判断思想，也就是找到中间几点后，分为左右两个链表，把右边的链表反转，两边同时从头节点开始移动。若每个节点的值都相等，说明是回文链表。
+
+其实对于后面的链表反转已经不陌生了，刚好上一提反转链表就是用来解决这个问题的。那怎么去解决寻找中间结点的问题，题解介绍了一种快慢指针的方式。那利用该方式能找到中间结点的[原理](https://blog.csdn.net/qq_40663810/article/details/79382283)是：
+
+> 定义了一个快指针fast和一个慢指针slow，快指针一次移动两个结点，慢指针一次移动一个结点。
+>
+> 当fast到达链表尾部结点的时候，慢指针也就移动到了链表的中间结点（同化成一个路程问题，同一段路程，A的速度是B的两倍，他们同时出发，当A走完全程时，B也就刚好走过一半）
+>
+> 如果结点个数是偶数个的话，slow指向中间两个元素的右边那个元素。
+
+```python
+def isPalindrome(self,head):
+  #考虑空链表的情况（空链表也可视为回文链表）
+  if not head:
+    return True
+  
+  #引入快慢指针，找到回文链表的中间结点
+  fast = head
+  slow = head
+  ## 保证快慢指针还可以往后移动，实际上fast.next就是slow.next，fast.next.next才是真正的fast.next
+  while fast.next and fast.next.next：
+  	fast = fast.next.next
+    slow = slow.next
+    
+  #此时，slow的位置即为中间结点，将中间结点右侧的链表进行反转
+  	pre = None
+    cur = slow.next
+    
+    while cur:
+      tmp = cur.next
+      cur.next = pre
+      pre = cur
+      cur = tmp
+      
+   #反转完成后，pre作为右链表的头节点，此时要判断整个链表是否为回文链表只需要判断左右链表对应的结点值是否相等
+  	while pre:
+      if pre.val != head.val:
+        return False
+      pre = pre.next
+      head = head.next
+    
+    return True
+```
+

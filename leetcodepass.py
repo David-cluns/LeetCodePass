@@ -124,3 +124,36 @@ class Solution(object):
         
         return reverse(head, None)
             
+
+    # 回文链表解法：快慢指针+反转链表
+    def isPalindrome(self, head):
+        #考虑空指针的情况，空指针可以视为回文链表
+        if not head:
+            return True
+        
+        #引入快慢指针，确认回文链表中的中间结点
+        slow = fast = head
+        #这个循环也就是要保证快慢指针都还可以往后移动，其中fast.next就是slow.next，fast.next.next才是真正的fast.next
+        while fast.next and fast.next.next:
+            fast = fast.next.next
+            slow = slow.next
+        
+        #找到中间结点后，将中间结点右边的链表进行反转
+        pre = None
+        cur = slow.next
+
+        while cur:
+            tmp = cur.next
+            cur.next = pre
+            pre = cur
+            cur = tmp
+
+        #反转完成后，pre就是右链表的头节点
+        while pre:
+            if pre.val != head.val:
+                return False
+            pre = pre.next
+            head = head.next
+        
+
+        return True
