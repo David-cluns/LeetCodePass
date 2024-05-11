@@ -157,3 +157,26 @@ class Solution(object):
         
 
         return True
+
+    #环形链表解法1:哈希表
+    def hasCycle(self, head):
+        seen = set()
+        while head:
+            if head in seen:
+                return True
+            seen.add(head)
+            head = head.next
+        
+        return False
+    
+    #环形链表解法2:快慢指针
+    def hasCycle(self, head):
+        slow = fast = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+        
+            if slow == fast:
+                return True
+        
+        return False

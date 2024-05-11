@@ -364,22 +364,92 @@ def isPalindrome(self,head):
     slow = slow.next
     
   #此时，slow的位置即为中间结点，将中间结点右侧的链表进行反转
-  	pre = None
-    cur = slow.next
+ 	pre = None
+  cur = slow.next
     
-    while cur:
-      tmp = cur.next
-      cur.next = pre
-      pre = cur
-      cur = tmp
+  while cur:
+    tmp = cur.next
+    cur.next = pre
+    pre = cur
+    cur = tmp
       
    #反转完成后，pre作为右链表的头节点，此时要判断整个链表是否为回文链表只需要判断左右链表对应的结点值是否相等
-  	while pre:
-      if pre.val != head.val:
-        return False
-      pre = pre.next
-      head = head.next
+  while pre:
+    if pre.val != head.val:
+      return False
+    pre = pre.next
+    head = head.next
     
     return True
 ```
 
+
+
+## 6. 环形链表
+
+### 6.1 题目描述
+
+![hasCycle](./img/hasCycle.png)
+
+### 6.2 题目解答
+
+本题的解题思路参考LeetCode题解[力扣官方题解](https://leetcode.cn/problems/linked-list-cycle/solutions/440042/huan-xing-lian-biao-by-leetcode-solution/?envType=study-plan-v2&envId=top-100-liked)
+
+#### 6.2.1 哈希表
+
+> 最容易想到的思路就是遍历所有节点，每次遍历到一个节点的时候，判断该节点此前是否被访问过。
+>
+> 具体地，我们可以使用哈希表来存储所有已经访问过的节点。每次我们到达一个节点，如果该节点已经存在于哈希表中，则说明该链表是环形链表，否则就将该节点加入哈希表中。重复这一过程，直到我们遍历完整个链表即可。
+
+实际上我在理解这个方法的时候，不太明白哈希表到底存的是什么。我一直以为存的是节点的数值，所以我以为这种方式无法判断，因为会出现相同值但是不是环形链表（如回文链表）的情况。但是询问了GPT后才明白，哈希表存储的是每个节点的指针（内存地址），而不是节点的数据域。因为节点的数据域可能相同，但内存地址一定是独一无二的。所以，再看该解法，实际上就是哈希表存了已经遍历过的节点地址，如果遍历到某节点的是否发现该节点地址已经存在于哈希表，说明这个节点在之前就已经遍历过了，那一定能说明存在环。
+
+```python
+class Solution(Object):
+  def hasCycle(self, head):
+    seen = set()
+    while head:
+      if head in seen
+      	return True
+      seen.add(head)
+      head = head.next
+    return False
+```
+
+
+
+#### 6.2.2 快慢指针
+
+该方法实际上对于一开始接触这种题型的我是打死都想不出来的。。。
+
+> 本方法需要对"Floyd判圈算法"（又称龟兔赛跑算法）有所了解。
+>
+> 假想乌龟和兔子在链表上移动，兔子跑得快（一次移动两个节点），乌龟跑的慢（一次移动一个节点）。
+>
+> 当乌龟和兔子在链表上的同一个节点开始移动时，如果该链表中没有环，那么兔子将一直处于乌龟的前方；如果链表中存在环，那么兔子会先于乌龟进入环，并且一直在环内移动。等到乌龟进入环时，由于兔子的速度快，，它一定会在某个时刻与乌龟相遇。
+>
+> 兔子会不会跳过乌龟，从来不会和乌龟相遇呢？这是不可能的，如果有环的话，那么兔子和乌龟都进入环中。这时用“相对速度”思考，乌龟不动，兔子相对于乌龟每次只走一步，这样就可以看出兔子一定会和乌龟相遇了。
+
+```python
+class Solution:
+  def hasCycle(self, head):
+    fast = slow = head
+    # 循环的条件是要保证快慢指针还能移动(快针移两步，慢针移一步)。
+    while fast and fast.next:
+      fast = fast.next.next
+      slow = slow.next
+      if slow == fast:
+        return True
+    
+    return False
+```
+
+对于这种解法，我唯一不太明白的就是进入while循环的条件。这个条件是为了保障快慢指针都能向前移动，但是对于快指针，我想的是，要保证`fast.next.next`存在，也就是说我想的循环条件是`fast.next` 和`fast.next.next`均非空。
+
+当我们在循环中检查`while fast and fast.next`，实际上确保了两件事：
+
+1. fast存在：意味着链表至少有一个节点，快指针可以站在这个节点上。
+2. Fast.next存在，意味着至少还有一个额外的节点，快指针可以安全地向前移动一步。
+
+其实这样的判断条件就已经足以确保`fast.next.next`的访问是安全的，因为如果`fast.next`非空，我们才会尝试访问`fast.next.next`。如果直接判断 `fast.next` 和 `fast.next.next` 存在，会稍显冗余，因为你在实际上只需要保证能够移动到 `fast.next.next` 即可，而这已经由 `while fast and fast.next:` 保证了。
+
+对比回文链表中的循环条件`while fast.next and fast.next.next`，为什么要进一步确保`fast.next.next`非空，实际上也是想当链表节点为偶数个时，中间节点判定为中间两个节点中的第一个节点。
